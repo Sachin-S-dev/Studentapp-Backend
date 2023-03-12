@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sachin.spring.data.mongodb.model.Student;
 import com.sachin.spring.data.mongodb.repository.StudentRepository;
 
-@CrossOrigin(origins = "http://localhost:3000") // Allow requests from the React application
+@CrossOrigin(origins = "http://localhost:8081") // Allow requests from the React application
 @RequestMapping("/api")
 @RestController
 
@@ -29,18 +29,23 @@ public class StudentController {
   @PostMapping("/students/add")  //ResponseEntity represents the whole HTTP response
   public ResponseEntity<Student> createStudent(@Valid @RequestBody Student student) {
     // Validation errors will be automatically caught by Spring
-	student.getAdmissionNumber(); // Get admission number
-    Student savedStudent = studentRepository.save(student);
-    return ResponseEntity.ok(savedStudent);
+        student.setName(student.getName());
+	student.setDob(student.getDob());
+	student.setClassval(student.getClassval());
+	student.setDivision(student.getDivision());
+	student.setGender(student.getGender());
+	student.setAdmissionNumber(student.getAdmissionNumber()); // Get admission number
+        return ResponseEntity.ok(this.studentRepository.save(student));
+	
   }
  
-  // postmapping and getmapping is notworking properly.I have tried my best
+  
 
   
-  @GetMapping("/students/list")
-  public List<Student> getAllStudents() {
-      return studentRepository.findAllByOrderByNameAsc();
-  }
+  @GetMapping("/students/getAll")
+   public ResponseEntity<List<Student>> getAllStudents() {
+      return ResponseEntity.ok(this.studentRepository.findAll());
+  }   
 
        
   
